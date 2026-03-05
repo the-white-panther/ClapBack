@@ -1,0 +1,5 @@
+export const CONFIG = {
+  FREE_ANALYSIS_LIMIT: 2,
+  MAX_CHAT_CONTEXT_LENGTH: 5000,
+  RATE_LIMIT_PER_HOUR: 10,
+} as const;
