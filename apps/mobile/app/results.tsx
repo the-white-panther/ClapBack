@@ -62,6 +62,23 @@ export default function ResultsScreen() {
             {data.replies.map((reply, index) => (
               <ReplyCard key={index} label={reply.label} text={reply.text} />
             ))}
+            {data.clarifyingQuestions && data.clarifyingQuestions.length > 0 && (
+              <View style={styles.questionsCard}>
+                <Text style={styles.questionsTitle}>Need more context</Text>
+                {data.clarifyingQuestions.map((q, i) => (
+                  <Text key={i} style={styles.questionText}>{`\u2022 ${q}`}</Text>
+                ))}
+                <TouchableOpacity
+                  style={styles.refineButton}
+                  onPress={() => router.replace({
+                    pathname: '/',
+                    params: { prefillContext: params.chatContext, prefillAdditional: params.additionalContext ?? '' },
+                  })}
+                >
+                  <Text style={styles.refineButtonText}>Add More Context</Text>
+                </TouchableOpacity>
+              </View>
+            )}
             <TouchableOpacity
               style={styles.actionButton}
               onPress={() => router.replace('/')}
@@ -99,4 +116,22 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
   actionButtonText: { color: '#FFFFFF', fontSize: 16, fontWeight: '600' },
+  questionsCard: {
+    backgroundColor: '#FFF7ED',
+    borderRadius: 12,
+    padding: 16,
+    marginTop: 16,
+    borderWidth: 1,
+    borderColor: '#FDBA74',
+  },
+  questionsTitle: { fontSize: 15, fontWeight: '600', color: '#9A3412', marginBottom: 8 },
+  questionText: { fontSize: 14, color: '#7C2D12', lineHeight: 22, marginBottom: 4 },
+  refineButton: {
+    backgroundColor: '#EA580C',
+    borderRadius: 10,
+    paddingVertical: 12,
+    alignItems: 'center',
+    marginTop: 12,
+  },
+  refineButtonText: { color: '#FFFFFF', fontSize: 14, fontWeight: '600' },
 });

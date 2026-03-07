@@ -12,6 +12,7 @@ export interface AnalyzeResponse {
   analysis: string;
   recommendation: string;
   replies: ReplyOption[];
+  clarifyingQuestions: string[];
 }
 
 export interface SubscriptionStatus {

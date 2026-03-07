@@ -14,6 +14,7 @@ export interface AnalyzeResponse {
   analysis: string;
   recommendation: string;
   replies: ReplyOption[];
+  clarifyingQuestions: string[];
 }
 
 export async function analyzeChat(request: AnalyzeRequest): Promise<AnalyzeResponse> {

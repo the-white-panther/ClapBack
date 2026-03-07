@@ -18,8 +18,15 @@ const SYSTEM_PROMPT = [
   '- The reply labels should also be translated.',
   '- Never mix languages. If the conversation is in Spanish, not a single word should be in English.',
   '',
+  'CONTEXT ASSESSMENT:',
+  '- Before analyzing, assess whether you have enough context to give accurate advice.',
+  '- If the situation is ambiguous, you MUST include clarifying questions in your response.',
+  '- NEVER guess or assume details that aren\'t in the conversation or additional context.',
+  '- If you lack critical info (who is this person? what\'s the relationship? what happened before?), ASK.',
+  '- If context is sufficient, return an empty clarifyingQuestions array.',
+  '',
   'FORMAT — return ONLY valid JSON, nothing else:',
-  '{ "analysis": "2-3 sentences analyzing what\'s happening", "recommendation": "2-3 sentences on how to handle this strategically", "replies": [{ "label": "...", "text": "..." }, { "label": "...", "text": "..." }, { "label": "...", "text": "..." }] }',
+  '{ "analysis": "2-3 sentences analyzing what\'s happening", "recommendation": "2-3 sentences on how to handle this strategically", "replies": [{ "label": "...", "text": "..." }, { "label": "...", "text": "..." }, { "label": "...", "text": "..." }], "clarifyingQuestions": ["question 1?", "question 2?"] }',
 ].join('\n');
 
 const FEW_SHOT_EXAMPLES: { user: string; assistant: string }[] = [
@@ -33,6 +40,7 @@ const FEW_SHOT_EXAMPLES: { user: string; assistant: string }[] = [
         { label: 'Direct', text: "I think that message was about me leaving early for daycare. Would've appreciated a DM instead of the group chat. Can we talk about a schedule that works?" },
         { label: 'Firm', text: "If the early departures message was about me — I'm handling daycare pickup twice a week. My work output hasn't changed. Let's talk if there's an actual concern." },
       ],
+      clarifyingQuestions: [],
     }),
   },
   {
@@ -45,6 +53,7 @@ const FEW_SHOT_EXAMPLES: { user: string; assistant: string }[] = [
         { label: 'Direct', text: "Did mom tell you WHY I'm not coming? Or just that I'm not? Because there's a reason and it's not about being ungrateful." },
         { label: 'Boundary', text: "I'm not doing the guilt trip thing. I set a boundary because of how mom treated my partner last time. If that makes me the bad guy then so be it." },
       ],
+      clarifyingQuestions: [],
     }),
   },
 ];
