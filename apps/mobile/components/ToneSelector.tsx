@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, ScrollView, TextInput } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, TextInput, StyleSheet } from 'react-native';
 import { Tone, TONE_PRESETS } from '../constants/config';
 
 interface ToneSelectorProps {
@@ -16,42 +16,29 @@ export function ToneSelector({
   onCustomToneChange,
 }: ToneSelectorProps) {
   return (
-    <View className="mb-4">
-      <Text className="text-sm font-semibold text-gray-600 mb-2">Choose a tone</Text>
+    <View style={styles.container}>
+      <Text style={styles.label}>Choose a tone</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        <View className="flex-row gap-2">
-          {TONE_PRESETS.map((tone) => (
-            <TouchableOpacity
-              key={tone.id}
-              className={`px-4 py-2 rounded-full border ${
-                selected === tone.id
-                  ? 'bg-indigo-600 border-indigo-600'
-                  : 'bg-white border-gray-300'
-              }`}
-              onPress={() => onSelect(tone.id)}
-            >
-              <Text
-                className={`text-sm ${
-                  selected === tone.id ? 'text-white font-semibold' : 'text-gray-700'
-                }`}
+        <View style={styles.row}>
+          {TONE_PRESETS.map((tone) => {
+            const isSelected = selected === tone.id;
+            return (
+              <TouchableOpacity
+                key={tone.id}
+                style={[styles.chip, isSelected ? styles.chipSelected : styles.chipDefault]}
+                onPress={() => onSelect(tone.id)}
               >
-                {tone.emoji} {tone.label}
-              </Text>
-            </TouchableOpacity>
-          ))}
+                <Text style={[styles.chipText, isSelected ? styles.chipTextSelected : styles.chipTextDefault]}>
+                  {tone.label}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
           <TouchableOpacity
-            className={`px-4 py-2 rounded-full border ${
-              selected === 'custom'
-                ? 'bg-indigo-600 border-indigo-600'
-                : 'bg-white border-gray-300'
-            }`}
+            style={[styles.chip, selected === 'custom' ? styles.chipSelected : styles.chipDefault]}
             onPress={() => onSelect('custom')}
           >
-            <Text
-              className={`text-sm ${
-                selected === 'custom' ? 'text-white font-semibold' : 'text-gray-700'
-              }`}
-            >
+            <Text style={[styles.chipText, selected === 'custom' ? styles.chipTextSelected : styles.chipTextDefault]}>
               Custom
             </Text>
           </TouchableOpacity>
@@ -59,7 +46,7 @@ export function ToneSelector({
       </ScrollView>
       {selected === 'custom' && (
         <TextInput
-          className="bg-gray-100 rounded-lg p-3 mt-2 text-base text-gray-900"
+          style={styles.customInput}
           placeholder="Describe your tone..."
           placeholderTextColor="#9CA3AF"
           value={customTone}
@@ -69,3 +56,28 @@ export function ToneSelector({
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: { marginBottom: 16 },
+  label: { fontSize: 14, fontWeight: '600', color: '#4B5563', marginBottom: 8 },
+  row: { flexDirection: 'row', gap: 8 },
+  chip: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 20,
+    borderWidth: 1,
+  },
+  chipSelected: { backgroundColor: '#4F46E5', borderColor: '#4F46E5' },
+  chipDefault: { backgroundColor: '#FFFFFF', borderColor: '#D1D5DB' },
+  chipText: { fontSize: 14 },
+  chipTextSelected: { color: '#FFFFFF', fontWeight: '600' },
+  chipTextDefault: { color: '#374151' },
+  customInput: {
+    backgroundColor: '#F3F4F6',
+    borderRadius: 8,
+    padding: 12,
+    marginTop: 8,
+    fontSize: 16,
+    color: '#111827',
+  },
+});

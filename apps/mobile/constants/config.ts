@@ -14,10 +14,10 @@ export interface ToneConfig {
 }
 
 export const TONE_PRESETS: ToneConfig[] = [
-  { id: 'calm', label: 'Calm', emoji: '\u{1F60C}' },
-  { id: 'assertive', label: 'Assertive', emoji: '\u{1F4AA}' },
-  { id: 'cold', label: 'Cold', emoji: '\u{1F9CA}' },
-  { id: 'funny', label: 'Funny', emoji: '\u{1F602}' },
-  { id: 'romantic', label: 'Romantic', emoji: '\u{2764}\u{FE0F}' },
-  { id: 'savage', label: 'Savage', emoji: '\u{1F525}' },
+  { id: 'calm', label: 'Calm', emoji: '😌' },
+  { id: 'assertive', label: 'Assertive', emoji: '💪' },
+  { id: 'cold', label: 'Cold', emoji: '🧊' },
+  { id: 'funny', label: 'Funny', emoji: '😂' },
+  { id: 'romantic', label: 'Romantic', emoji: '❤️' },
+  { id: 'savage', label: 'Savage', emoji: '🔥' },
 ];

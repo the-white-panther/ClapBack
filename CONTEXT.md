@@ -14,7 +14,7 @@ An iOS app that helps people respond to difficult conversations. Users paste cha
 | Subscriptions | RevenueCat (react-native-purchases) |
 | Backend | Node.js, Hono, TypeScript |
 | Hosting | Railway or Fly.io |
-| AI | OpenRouter (multi-model gateway) |
+| AI | OpenRouter (multi-model: GPT-4o + Llama 3.1 70B) |
 | OCR | Apple Vision (on-device) |
 
 ## Key Dependencies
@@ -25,7 +25,6 @@ An iOS app that helps people respond to difficult conversations. Users paste cha
 - `react-native-purchases` — RevenueCat SDK
 - `@react-native-async-storage/async-storage` — local free-count tracking
 - `hono` — backend framework
-- `nativewind` — Tailwind for React Native
 
 ## Key Commands
 

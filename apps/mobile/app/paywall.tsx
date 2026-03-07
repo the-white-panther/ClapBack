@@ -1,37 +1,52 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const TIERS = [
-  { name: 'Weekly', price: '$2.99/wk', badge: '' },
-  { name: 'Monthly', price: '$7.99/mo', badge: 'Most Popular' },
-  { name: 'Yearly', price: '$49.99/yr', badge: 'Best Value' },
+  { name: 'Weekly', price: '$1.99/wk', badge: '' },
+  { name: 'Monthly', price: '$6.99/mo', badge: 'Most Popular' },
+  { name: 'Yearly', price: '$39.99/yr', badge: 'Best Value' },
 ];
 
 export default function PaywallScreen() {
   return (
-    <SafeAreaView className="flex-1 bg-white" edges={['bottom']}>
-      <View className="flex-1 px-4 pt-8 items-center">
-        <Text className="text-2xl font-bold text-gray-900 mb-2">Subscribe to continue</Text>
-        <Text className="text-base text-gray-500 mb-8 text-center">
-          Unlock unlimited analyses and premium features
-        </Text>
+    <SafeAreaView style={styles.container} edges={['bottom']}>
+      <View style={styles.content}>
+        <Text style={styles.title}>Subscribe to continue</Text>
+        <Text style={styles.subtitle}>Unlock unlimited analyses and premium features</Text>
 
         {TIERS.map((tier) => (
-          <TouchableOpacity
-            key={tier.name}
-            className="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 mb-3 flex-row justify-between items-center"
-          >
+          <TouchableOpacity key={tier.name} style={styles.tierCard}>
             <View>
-              <Text className="text-lg font-semibold text-gray-900">{tier.name}</Text>
-              {tier.badge ? (
-                <Text className="text-xs text-indigo-600 font-medium">{tier.badge}</Text>
-              ) : null}
+              <Text style={styles.tierName}>{tier.name}</Text>
+              {tier.badge ? <Text style={styles.tierBadge}>{tier.badge}</Text> : null}
             </View>
-            <Text className="text-base font-semibold text-indigo-600">{tier.price}</Text>
+            <Text style={styles.tierPrice}>{tier.price}</Text>
           </TouchableOpacity>
         ))}
       </View>
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#FFFFFF' },
+  content: { flex: 1, paddingHorizontal: 16, paddingTop: 32, alignItems: 'center' },
+  title: { fontSize: 24, fontWeight: '700', color: '#111827', marginBottom: 8 },
+  subtitle: { fontSize: 16, color: '#6B7280', marginBottom: 32, textAlign: 'center' },
+  tierCard: {
+    width: '100%',
+    backgroundColor: '#F9FAFB',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  tierName: { fontSize: 18, fontWeight: '600', color: '#111827' },
+  tierBadge: { fontSize: 12, color: '#4F46E5', fontWeight: '500', marginTop: 2 },
+  tierPrice: { fontSize: 16, fontWeight: '600', color: '#4F46E5' },
+});

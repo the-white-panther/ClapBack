@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, Text, ScrollView, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, ActivityIndicator, StyleSheet } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { PsychologyCard } from '../components/PsychologyCard';
@@ -23,26 +23,26 @@ export default function ResultsScreen() {
   }, [params.chatContext, params.tone, params.customTone, analyze]);
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50" edges={['bottom']}>
-      <ScrollView className="flex-1 px-4 pt-4">
+    <SafeAreaView style={styles.container} edges={['bottom']}>
+      <ScrollView style={styles.scroll}>
         {loading && (
-          <View className="items-center justify-center py-20">
+          <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color="#4F46E5" />
-            <Text className="text-gray-500 mt-4">Analyzing conversation...</Text>
+            <Text style={styles.loadingText}>Analyzing conversation...</Text>
           </View>
         )}
 
         {error && (
-          <View className="bg-red-50 rounded-xl p-4 border border-red-200">
-            <Text className="text-red-800 font-semibold mb-1">Something went wrong</Text>
-            <Text className="text-red-700">{error}</Text>
+          <View style={styles.errorContainer}>
+            <Text style={styles.errorTitle}>Something went wrong</Text>
+            <Text style={styles.errorText}>{error}</Text>
           </View>
         )}
 
         {data && (
           <>
             <PsychologyCard insight={data.psychology} />
-            <Text className="text-lg font-semibold text-gray-900 mb-3">Suggested Replies</Text>
+            <Text style={styles.sectionTitle}>Suggested Replies</Text>
             {data.replies.map((reply, index) => (
               <ReplyCard key={index} label={reply.label} text={reply.text} />
             ))}
@@ -52,3 +52,20 @@ export default function ResultsScreen() {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#F9FAFB' },
+  scroll: { flex: 1, paddingHorizontal: 16, paddingTop: 16 },
+  loadingContainer: { alignItems: 'center', justifyContent: 'center', paddingVertical: 80 },
+  loadingText: { color: '#6B7280', marginTop: 16, fontSize: 15 },
+  errorContainer: {
+    backgroundColor: '#FEF2F2',
+    borderRadius: 12,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#FECACA',
+  },
+  errorTitle: { color: '#991B1B', fontWeight: '600', marginBottom: 4, fontSize: 15 },
+  errorText: { color: '#B91C1C', fontSize: 14 },
+  sectionTitle: { fontSize: 18, fontWeight: '600', color: '#111827', marginBottom: 12 },
+});

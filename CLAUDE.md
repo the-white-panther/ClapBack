@@ -24,7 +24,7 @@ What2Say is an iOS app that helps people craft replies in difficult conversation
 - **expo-image-picker** — for screenshot selection
 - **react-native-purchases (RevenueCat)** — StoreKit subscription management
 - **AsyncStorage** — track free analysis count locally
-- **NativeWind (TailwindCSS)** — styling
+- **StyleSheet** — React Native built-in styling (NativeWind dropped due to Expo Go incompatibility)
 
 ### Backend
 - **Node.js** with **Hono** (lightweight, fast, edge-ready)
@@ -37,8 +37,10 @@ What2Say is an iOS app that helps people craft replies in difficult conversation
 
 ### AI
 - **OpenRouter** as the AI gateway
-- Primary model: best available for reasoning (Claude/GPT-4o via OpenRouter)
-- Fallback model: cheaper model for high traffic
+- Multi-model routing per tone:
+  - **GPT-4o** (OPENROUTER_MODEL_DEFAULT) → cold, funny, romantic, savage
+  - **Llama 3.1 70B** (OPENROUTER_MODEL_ALT) → calm, assertive, custom
+- Few-shot examples as actual message turns (user/assistant pairs) for tone accuracy
 
 ### OCR
 - **Apple Vision framework** via `expo-modules` or a React Native bridge

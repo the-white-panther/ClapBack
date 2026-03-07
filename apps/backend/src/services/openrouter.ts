@@ -1,14 +1,11 @@
 import { ENV } from '../config/index.js';
-import { OpenRouterRequest, OpenRouterResponse } from '../types/index.js';
+import { OpenRouterMessage, OpenRouterRequest, OpenRouterResponse } from '../types/index.js';
 
-export async function callOpenRouter(systemPrompt: string, userPrompt: string): Promise<string> {
+export async function callOpenRouter(messages: OpenRouterMessage[], model: string): Promise<string> {
   const body: OpenRouterRequest = {
-    model: ENV.OPENROUTER_MODEL,
-    messages: [
-      { role: 'system', content: systemPrompt },
-      { role: 'user', content: userPrompt },
-    ],
-    temperature: 0.8,
+    model,
+    messages,
+    temperature: 0.9,
     max_tokens: 1500,
   };
 

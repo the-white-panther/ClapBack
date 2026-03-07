@@ -18,7 +18,8 @@ User Input (text/screenshot)
   [Backend - Hono]
    - Validate subscription via RevenueCat API
    - Rate limit check
-   - Build prompt with chat context + tone + system instructions
+   - Build prompt with chat context + tone + few-shot examples
+   - Route to best model per tone (GPT-4o or Llama 3.1 70B)
    - Call OpenRouter API
    - Parse AI response
    - Return { psychology, replies[3] }
@@ -54,7 +55,7 @@ User Input (text/screenshot)
 | `routes/subscription.ts` | POST /api/validate-subscription |
 | `services/openrouter.ts` | OpenRouter API integration |
 | `services/revenuecat.ts` | RevenueCat receipt/subscription validation |
-| `services/prompt.ts` | AI prompt construction |
+| `services/prompt.ts` | AI prompt construction + few-shot examples + model routing |
 | `middleware/rateLimit.ts` | Per-device rate limiting |
 | `middleware/validateRequest.ts` | Input validation and sanitization |
 | `config/index.ts` | Environment variables and constants |
@@ -88,7 +89,7 @@ Shared:
 
 | Service | Purpose | Connection |
 |---------|---------|-----------|
-| OpenRouter | AI completions | Backend -> HTTPS API |
+| OpenRouter | AI completions (GPT-4o + Llama 3.1 70B) | Backend -> HTTPS API, model routed per tone |
 | RevenueCat | Subscription management | Mobile SDK + Backend API validation |
 | Apple Vision | OCR | On-device framework (no network) |
 | App Store Connect | Distribution + IAP | Via EAS Build + RevenueCat |

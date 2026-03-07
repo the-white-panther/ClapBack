@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+} from 'react-native';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { TextInputArea } from '../components/TextInputArea';
@@ -11,7 +19,8 @@ export default function HomeScreen() {
   const [tone, setTone] = useState<Tone>('calm');
   const [customTone, setCustomTone] = useState('');
 
-  const canSubmit = chatContext.trim().length > 0 && (tone !== 'custom' || customTone.trim().length > 0);
+  const canSubmit =
+    chatContext.trim().length > 0 && (tone !== 'custom' || customTone.trim().length > 0);
 
   const handleAnalyze = () => {
     if (!canSubmit) return;
@@ -26,16 +35,14 @@ export default function HomeScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white" edges={['bottom']}>
+    <SafeAreaView style={styles.container} edges={['bottom']}>
       <KeyboardAvoidingView
-        className="flex-1"
+        style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <ScrollView className="flex-1 px-4 pt-4" keyboardShouldPersistTaps="handled">
-          <Text className="text-2xl font-bold text-gray-900 mb-1">Analyze a conversation</Text>
-          <Text className="text-sm text-gray-500 mb-4">
-            Paste the chat and choose a reply tone
-          </Text>
+        <ScrollView style={styles.scroll} keyboardShouldPersistTaps="handled">
+          <Text style={styles.title}>Analyze a conversation</Text>
+          <Text style={styles.subtitle}>Paste the chat and choose a reply tone</Text>
 
           <TextInputArea value={chatContext} onChangeText={setChatContext} />
           <ToneSelector
@@ -46,13 +53,11 @@ export default function HomeScreen() {
           />
 
           <TouchableOpacity
-            className={`rounded-xl py-4 items-center mt-2 ${
-              canSubmit ? 'bg-indigo-600' : 'bg-gray-300'
-            }`}
+            style={[styles.button, canSubmit ? styles.buttonActive : styles.buttonDisabled]}
             onPress={handleAnalyze}
             disabled={!canSubmit}
           >
-            <Text className={`text-base font-semibold ${canSubmit ? 'text-white' : 'text-gray-500'}`}>
+            <Text style={[styles.buttonText, canSubmit ? styles.buttonTextActive : styles.buttonTextDisabled]}>
               Analyze
             </Text>
           </TouchableOpacity>
@@ -61,3 +66,17 @@ export default function HomeScreen() {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#FFFFFF' },
+  flex: { flex: 1 },
+  scroll: { flex: 1, paddingHorizontal: 16, paddingTop: 16 },
+  title: { fontSize: 24, fontWeight: '700', color: '#111827', marginBottom: 4 },
+  subtitle: { fontSize: 14, color: '#6B7280', marginBottom: 16 },
+  button: { borderRadius: 12, paddingVertical: 16, alignItems: 'center', marginTop: 8, marginBottom: 32 },
+  buttonActive: { backgroundColor: '#4F46E5' },
+  buttonDisabled: { backgroundColor: '#D1D5DB' },
+  buttonText: { fontSize: 16, fontWeight: '600' },
+  buttonTextActive: { color: '#FFFFFF' },
+  buttonTextDisabled: { color: '#6B7280' },
+});

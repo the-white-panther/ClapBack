@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TextInput, Text } from 'react-native';
+import { View, TextInput, Text, StyleSheet } from 'react-native';
 import { APP_CONFIG } from '../constants/config';
 
 interface TextInputAreaProps {
@@ -9,9 +9,9 @@ interface TextInputAreaProps {
 
 export function TextInputArea({ value, onChangeText }: TextInputAreaProps) {
   return (
-    <View className="mb-4">
+    <View style={styles.container}>
       <TextInput
-        className="bg-gray-100 rounded-xl p-4 text-base min-h-[160px] text-gray-900"
+        style={styles.input}
         placeholder="Paste your conversation here..."
         placeholderTextColor="#9CA3AF"
         multiline
@@ -20,9 +20,22 @@ export function TextInputArea({ value, onChangeText }: TextInputAreaProps) {
         value={value}
         onChangeText={onChangeText}
       />
-      <Text className="text-right text-xs text-gray-400 mt-1">
+      <Text style={styles.counter}>
         {value.length}/{APP_CONFIG.MAX_CHAT_CONTEXT_LENGTH}
       </Text>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: { marginBottom: 16 },
+  input: {
+    backgroundColor: '#F3F4F6',
+    borderRadius: 12,
+    padding: 16,
+    fontSize: 16,
+    minHeight: 160,
+    color: '#111827',
+  },
+  counter: { textAlign: 'right', fontSize: 12, color: '#9CA3AF', marginTop: 4 },
+});
