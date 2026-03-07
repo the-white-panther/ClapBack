@@ -11,7 +11,7 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
-import { router, useLocalSearchParams } from 'expo-router';
+import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
 import { TextInputArea } from '../components/TextInputArea';
@@ -19,9 +19,8 @@ import { recognizeText } from '../modules/expo-ocr';
 import { useFreeCount } from '../contexts/FreeCountContext';
 
 export default function HomeScreen() {
-  const params = useLocalSearchParams<{ prefillContext?: string; prefillAdditional?: string }>();
-  const [chatContext, setChatContext] = useState(params.prefillContext ?? '');
-  const [additionalContext, setAdditionalContext] = useState(params.prefillAdditional ?? '');
+  const [chatContext, setChatContext] = useState('');
+  const [additionalContext, setAdditionalContext] = useState('');
   const [ocrLoading, setOcrLoading] = useState(false);
   const [photoCount, setPhotoCount] = useState(0);
   const { remaining, canAnalyze } = useFreeCount();

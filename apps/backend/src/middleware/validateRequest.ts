@@ -11,7 +11,7 @@ export async function validateAnalyzeRequest(c: Context, next: Next) {
     return c.json({ error: 'Invalid JSON body.' }, 400);
   }
 
-  const { chatContext, additionalContext } = body;
+  const { chatContext, additionalContext, clarifyingAnswers } = body;
 
   if (!chatContext || typeof chatContext !== 'string') {
     return c.json({ error: 'chatContext is required and must be a string.' }, 400);
@@ -23,6 +23,10 @@ export async function validateAnalyzeRequest(c: Context, next: Next) {
 
   if (additionalContext !== undefined && typeof additionalContext !== 'string') {
     return c.json({ error: 'additionalContext must be a string.' }, 400);
+  }
+
+  if (clarifyingAnswers !== undefined && typeof clarifyingAnswers !== 'string') {
+    return c.json({ error: 'clarifyingAnswers must be a string.' }, 400);
   }
 
   await next();

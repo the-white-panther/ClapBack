@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { View, Text, ScrollView, ActivityIndicator, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, Text, ScrollView, ActivityIndicator, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AnalysisCard } from '../components/AnalysisCard';
@@ -14,47 +14,100 @@ export default function ResultsScreen() {
     additionalContext?: string;
   }>();
 
-  const { data, loading, error, analyze } = useAnalysis();
+  const { phase, questions, data, error, startClarify, submitAnswers } = useAnalysis();
   const { decrement } = useFreeCount();
   const decremented = useRef(false);
+  const [answers, setAnswers] = useState<string[]>([]);
 
   useEffect(() => {
     if (params.chatContext) {
-      analyze(params.chatContext, params.additionalContext);
+      startClarify(params.chatContext, params.additionalContext);
     }
-  }, [params.chatContext, params.additionalContext, analyze]);
+  }, [params.chatContext, params.additionalContext, startClarify]);
 
   useEffect(() => {
-    if (data && !decremented.current) {
+    if (questions && questions.length > 0) {
+      setAnswers(new Array(questions.length).fill(''));
+    }
+  }, [questions]);
+
+  useEffect(() => {
+    if (phase === 'done' && !decremented.current) {
       decremented.current = true;
       decrement();
     }
-  }, [data, decrement]);
+  }, [phase, decrement]);
+
+  const handleSubmitAnswers = () => {
+    if (!questions) return;
+    const formatted = questions
+      .map((q, i) => `Q: ${q}\nA: ${answers[i] || ''}`)
+      .join('\n\n');
+    submitAnswers(formatted);
+  };
+
+  const updateAnswer = (index: number, value: string) => {
+    setAnswers(prev => {
+      const next = [...prev];
+      next[index] = value;
+      return next;
+    });
+  };
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
-      <ScrollView style={styles.scroll}>
-        {loading && (
+      <ScrollView style={styles.scroll} keyboardShouldPersistTaps="handled">
+        {phase === 'clarifying' && (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#4F46E5" />
+            <Text style={styles.loadingText}>Preparing questions...</Text>
+          </View>
+        )}
+
+        {phase === 'answering' && questions && (
+          <View style={styles.questionsCard}>
+            <Text style={styles.questionsTitle}>A few quick questions</Text>
+            <Text style={styles.questionsSubtitle}>Help us understand the situation better</Text>
+            {questions.map((question, index) => (
+              <View key={index} style={styles.questionBlock}>
+                <Text style={styles.questionLabel}>{`${index + 1}. ${question}`}</Text>
+                <TextInput
+                  style={styles.questionInput}
+                  placeholder="Your answer..."
+                  placeholderTextColor="#9CA3AF"
+                  value={answers[index] || ''}
+                  onChangeText={(value) => updateAnswer(index, value)}
+                  multiline
+                />
+              </View>
+            ))}
+            <TouchableOpacity style={styles.submitButton} onPress={handleSubmitAnswers}>
+              <Text style={styles.submitButtonText}>Submit Answers</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {phase === 'analyzing' && (
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color="#4F46E5" />
             <Text style={styles.loadingText}>Analyzing conversation...</Text>
           </View>
         )}
 
-        {error && (
+        {phase === 'error' && (
           <View style={styles.errorContainer}>
             <Text style={styles.errorTitle}>Something went wrong</Text>
             <Text style={styles.errorText}>{error}</Text>
             <TouchableOpacity
               style={styles.actionButton}
-              onPress={() => analyze(params.chatContext!, params.additionalContext)}
+              onPress={() => startClarify(params.chatContext!, params.additionalContext)}
             >
               <Text style={styles.actionButtonText}>Try Again</Text>
             </TouchableOpacity>
           </View>
         )}
 
-        {data && (
+        {phase === 'done' && data && (
           <>
             <AnalysisCard analysis={data.analysis} />
             <RecommendationCard recommendation={data.recommendation} />
@@ -62,23 +115,6 @@ export default function ResultsScreen() {
             {data.replies.map((reply, index) => (
               <ReplyCard key={index} label={reply.label} text={reply.text} />
             ))}
-            {data.clarifyingQuestions && data.clarifyingQuestions.length > 0 && (
-              <View style={styles.questionsCard}>
-                <Text style={styles.questionsTitle}>Need more context</Text>
-                {data.clarifyingQuestions.map((q, i) => (
-                  <Text key={i} style={styles.questionText}>{`\u2022 ${q}`}</Text>
-                ))}
-                <TouchableOpacity
-                  style={styles.refineButton}
-                  onPress={() => router.replace({
-                    pathname: '/',
-                    params: { prefillContext: params.chatContext, prefillAdditional: params.additionalContext ?? '' },
-                  })}
-                >
-                  <Text style={styles.refineButtonText}>Add More Context</Text>
-                </TouchableOpacity>
-              </View>
-            )}
             <TouchableOpacity
               style={styles.actionButton}
               onPress={() => router.replace('/')}
@@ -117,21 +153,32 @@ const styles = StyleSheet.create({
   },
   actionButtonText: { color: '#FFFFFF', fontSize: 16, fontWeight: '600' },
   questionsCard: {
-    backgroundColor: '#FFF7ED',
+    backgroundColor: '#FFFFFF',
     borderRadius: 12,
     padding: 16,
-    marginTop: 16,
     borderWidth: 1,
-    borderColor: '#FDBA74',
+    borderColor: '#E5E7EB',
   },
-  questionsTitle: { fontSize: 15, fontWeight: '600', color: '#9A3412', marginBottom: 8 },
-  questionText: { fontSize: 14, color: '#7C2D12', lineHeight: 22, marginBottom: 4 },
-  refineButton: {
-    backgroundColor: '#EA580C',
+  questionsTitle: { fontSize: 18, fontWeight: '700', color: '#111827', marginBottom: 4 },
+  questionsSubtitle: { fontSize: 14, color: '#6B7280', marginBottom: 16 },
+  questionBlock: { marginBottom: 16 },
+  questionLabel: { fontSize: 15, fontWeight: '600', color: '#374151', marginBottom: 8 },
+  questionInput: {
+    borderWidth: 1,
+    borderColor: '#D1D5DB',
     borderRadius: 10,
-    paddingVertical: 12,
-    alignItems: 'center',
-    marginTop: 12,
+    padding: 12,
+    fontSize: 14,
+    color: '#111827',
+    minHeight: 60,
+    textAlignVertical: 'top',
   },
-  refineButtonText: { color: '#FFFFFF', fontSize: 14, fontWeight: '600' },
+  submitButton: {
+    backgroundColor: '#4F46E5',
+    borderRadius: 12,
+    paddingVertical: 14,
+    alignItems: 'center',
+    marginTop: 4,
+  },
+  submitButtonText: { color: '#FFFFFF', fontSize: 16, fontWeight: '600' },
 });

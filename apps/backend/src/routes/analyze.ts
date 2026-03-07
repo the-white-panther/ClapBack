@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import { buildPrompt } from '../services/prompt.js';
+import { buildAnalyzePrompt } from '../services/prompt.js';
 import { callOpenRouter } from '../services/openrouter.js';
 import { validateAnalyzeRequest } from '../middleware/validateRequest.js';
 import { AnalyzeRequest, AnalyzeResponse } from '../types/index.js';
@@ -9,7 +9,7 @@ const analyzeRouter = new Hono();
 
 analyzeRouter.post('/', validateAnalyzeRequest, async (c) => {
   const body = await c.req.json<AnalyzeRequest>();
-  const messages = buildPrompt(body.chatContext, body.additionalContext);
+  const messages = buildAnalyzePrompt(body.chatContext, body.additionalContext, body.clarifyingAnswers);
 
   try {
     const rawResponse = await callOpenRouter(messages, ENV.OPENROUTER_MODEL_DEFAULT);
