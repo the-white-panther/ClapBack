@@ -1,4 +1,4 @@
-# What2Say - Architecture
+# ClapBack - Architecture
 
 ## High-Level Flow
 
@@ -40,7 +40,7 @@ User Input (text/screenshot)
 | `app/` | Expo Router screens (home, results, paywall) |
 | `components/` | Reusable UI (TextInput, ToneSelector, ReplyCard, PaywallModal) |
 | `services/api.ts` | HTTP calls to backend |
-| `services/ocr.ts` | On-device OCR via Apple Vision |
+| `modules/expo-ocr/` | Custom Expo module — Apple Vision OCR (Swift native, on-device) |
 | `services/purchases.ts` | RevenueCat initialization and subscription checks |
 | `hooks/useAnalysis.ts` | Orchestrates input -> API call -> results |
 | `hooks/useFreeCount.ts` | Tracks remaining free analyses in AsyncStorage |

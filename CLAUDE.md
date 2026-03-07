@@ -1,8 +1,8 @@
-# What2Say - Project CLAUDE.md
+# ClapBack - Project CLAUDE.md
 
 ## Project Overview
 
-What2Say is an iOS app that helps people craft replies in difficult conversations (ex-partners, couples, friends). Users provide chat context (text paste or screenshot), select a tone, and receive AI-powered analysis: a short psychology insight explaining what's happening, plus 3 suggested replies.
+ClapBack is an iOS app that helps people craft replies in difficult conversations (ex-partners, couples, friends). Users provide chat context (text paste or screenshot), select a tone, and receive AI-powered analysis: a short psychology insight explaining what's happening, plus 3 suggested replies.
 
 ## Product Rules
 
@@ -59,7 +59,7 @@ What2Say is an iOS app that helps people craft replies in difficult conversation
 ## Directory Structure (planned)
 
 ```
-What2Say/
+ClapBack/
   apps/
     mobile/              # Expo React Native app
       app/               # Expo Router pages

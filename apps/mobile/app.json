@@ -1,8 +1,8 @@
 {
   "expo": {
     "name": "mobile",
-    "slug": "what2say",
-    "scheme": "what2say",
+    "slug": "clapback",
+    "scheme": "clapback",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -14,7 +14,10 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.what2say"
+      "bundleIdentifier": "com.anonymous.clapback",
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "Select conversation screenshots to analyze with AI."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -23,13 +26,25 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.anonymous.clapback"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Select conversation screenshots to analyze with AI."
+        }
+      ],
+      "./modules/expo-ocr"
     ]
   }
 }

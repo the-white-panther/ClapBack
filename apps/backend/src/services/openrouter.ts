@@ -14,8 +14,8 @@ export async function callOpenRouter(messages: OpenRouterMessage[], model: strin
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${ENV.OPENROUTER_API_KEY}`,
-      'HTTP-Referer': 'https://what2say.app',
-      'X-Title': 'What2Say',
+      'HTTP-Referer': 'https://clapback.app',
+      'X-Title': 'ClapBack',
     },
     body: JSON.stringify(body),
   });

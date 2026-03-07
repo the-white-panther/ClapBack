@@ -1,4 +1,4 @@
-# What2Say - Lessons Learned
+# ClapBack - Lessons Learned
 
 ## Decisions
 
@@ -29,6 +29,19 @@
 ### 2026-03-07 - Backend .env Loading
 - Hono/tsx doesn't auto-load .env files — must use `tsx watch --env-file=.env` flag
 - Missing this caused 401 errors that looked like API issues
+
+### 2026-03-07 - Screenshot OCR via Custom Expo Module
+- Apple Vision (VNRecognizeTextRequest) runs on-device — no API cost, no privacy concerns
+- Required a custom Expo module (`modules/expo-ocr/`) using expo-modules-core
+- Swift bridges to JS via AsyncFunction + Promise pattern
+- This means Expo Go is no longer usable — must use dev builds (`npx expo run:ios`)
+- expo-image-picker already installed; just needed the plugin config in app.json for permissions
+
+### 2026-03-07 - CocoaPods + Spaces in Paths
+- CocoaPods/React Native prebuild fails if the project path contains spaces
+- Renamed parent folder from "Vibe Coding" to "VibeCoding" to fix
+- System Ruby 2.6 is too old for the `ffi` gem required by CocoaPods — install via Homebrew instead
+- Homebrew on Apple Silicon installs to `/opt/homebrew/bin/` — needs explicit PATH setup
 
 ### 2026-03-07 - Expo Go Emoji Rendering
 - Emojis in Text components render as ? boxes in Expo Go on iOS Simulator

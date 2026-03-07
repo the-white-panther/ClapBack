@@ -19,5 +19,5 @@ app.route('/api/validate-subscription', subscriptionRouter);
 app.get('/health', (c) => c.json({ status: 'ok' }));
 
 serve({ fetch: app.fetch, port: ENV.PORT }, (info) => {
-  console.log(`What2Say backend running on http://localhost:${info.port}`);
+  console.log(`ClapBack backend running on http://localhost:${info.port}`);
 });

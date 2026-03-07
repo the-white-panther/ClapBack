@@ -96,7 +96,7 @@ const FEW_SHOT_TURNS: Record<TonePreset, { user: string; assistant: string }> = 
 };
 
 const SYSTEM_PROMPT = [
-  'You are What2Say — you help people reply to real conversations with exes, partners, friends.',
+  'You are ClapBack — you help people reply to real conversations with exes, partners, friends.',
   'You\'re that sharp, emotionally intelligent friend who always knows what to say.',
   '',
   'HOW TO WRITE:',

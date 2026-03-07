@@ -2,10 +2,12 @@ import React from 'react';
 import { Stack } from 'expo-router';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
+import { FreeCountProvider } from '../contexts/FreeCountContext';
 
 export default function RootLayout() {
   return (
     <SafeAreaProvider>
+      <FreeCountProvider>
       <StatusBar style="dark" />
       <Stack
         screenOptions={{
@@ -14,10 +16,11 @@ export default function RootLayout() {
           headerTitleStyle: { fontWeight: '600' },
         }}
       >
-        <Stack.Screen name="index" options={{ title: 'What2Say' }} />
+        <Stack.Screen name="index" options={{ title: 'ClapBack' }} />
         <Stack.Screen name="results" options={{ title: 'Results' }} />
         <Stack.Screen name="paywall" options={{ title: 'Subscribe' }} />
       </Stack>
+      </FreeCountProvider>
     </SafeAreaProvider>
   );
 }

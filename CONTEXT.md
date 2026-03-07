@@ -1,4 +1,4 @@
-# What2Say - Project Context
+# ClapBack - Project Context
 
 ## What Is This
 
@@ -10,7 +10,7 @@ An iOS app that helps people respond to difficult conversations. Users paste cha
 |-------|-----------|
 | Mobile | React Native, Expo (SDK 52+), TypeScript |
 | Navigation | Expo Router |
-| Styling | NativeWind (TailwindCSS) |
+| Styling | StyleSheet (React Native built-in) |
 | Subscriptions | RevenueCat (react-native-purchases) |
 | Backend | Node.js, Hono, TypeScript |
 | Hosting | Railway or Fly.io |
