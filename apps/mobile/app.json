@@ -44,7 +44,6 @@
           "photosPermission": "Select conversation screenshots to analyze with AI."
         }
       ],
-      "./modules/expo-ocr"
     ]
   }
 }
