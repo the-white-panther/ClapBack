@@ -1,6 +1,5 @@
 import { useState, useCallback } from 'react';
 import { analyzeChat, AnalyzeResponse } from '../services/api';
-import { Tone } from '../constants/config';
 
 interface UseAnalysisState {
   data: AnalyzeResponse | null;
@@ -16,10 +15,10 @@ export function useAnalysis() {
   });
 
   const analyze = useCallback(
-    async (chatContext: string, tone: Tone, customTone?: string) => {
+    async (chatContext: string, additionalContext?: string) => {
       setState({ data: null, loading: true, error: null });
       try {
-        const data = await analyzeChat({ chatContext, tone, customTone });
+        const data = await analyzeChat({ chatContext, additionalContext });
         setState({ data, loading: false, error: null });
       } catch (err) {
         const message = err instanceof Error ? err.message : 'Unknown error';

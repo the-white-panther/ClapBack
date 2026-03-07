@@ -2,17 +2,16 @@ import React, { useEffect, useRef } from 'react';
 import { View, Text, ScrollView, ActivityIndicator, TouchableOpacity, StyleSheet } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { PsychologyCard } from '../components/PsychologyCard';
+import { AnalysisCard } from '../components/AnalysisCard';
+import { RecommendationCard } from '../components/RecommendationCard';
 import { ReplyCard } from '../components/ReplyCard';
 import { useAnalysis } from '../hooks/useAnalysis';
-import { Tone } from '../constants/config';
 import { useFreeCount } from '../contexts/FreeCountContext';
 
 export default function ResultsScreen() {
   const params = useLocalSearchParams<{
     chatContext: string;
-    tone: Tone;
-    customTone?: string;
+    additionalContext?: string;
   }>();
 
   const { data, loading, error, analyze } = useAnalysis();
@@ -20,10 +19,10 @@ export default function ResultsScreen() {
   const decremented = useRef(false);
 
   useEffect(() => {
-    if (params.chatContext && params.tone) {
-      analyze(params.chatContext, params.tone, params.customTone);
+    if (params.chatContext) {
+      analyze(params.chatContext, params.additionalContext);
     }
-  }, [params.chatContext, params.tone, params.customTone, analyze]);
+  }, [params.chatContext, params.additionalContext, analyze]);
 
   useEffect(() => {
     if (data && !decremented.current) {
@@ -48,7 +47,7 @@ export default function ResultsScreen() {
             <Text style={styles.errorText}>{error}</Text>
             <TouchableOpacity
               style={styles.actionButton}
-              onPress={() => analyze(params.chatContext!, params.tone!, params.customTone)}
+              onPress={() => analyze(params.chatContext!, params.additionalContext)}
             >
               <Text style={styles.actionButtonText}>Try Again</Text>
             </TouchableOpacity>
@@ -57,7 +56,8 @@ export default function ResultsScreen() {
 
         {data && (
           <>
-            <PsychologyCard insight={data.psychology} />
+            <AnalysisCard analysis={data.analysis} />
+            <RecommendationCard recommendation={data.recommendation} />
             <Text style={styles.sectionTitle}>Suggested Replies</Text>
             {data.replies.map((reply, index) => (
               <ReplyCard key={index} label={reply.label} text={reply.text} />

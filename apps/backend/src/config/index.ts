@@ -6,5 +6,4 @@ export const ENV = {
   PORT: Number(process.env.PORT ?? '3000'),
   OPENROUTER_BASE_URL: 'https://openrouter.ai/api/v1',
   OPENROUTER_MODEL_DEFAULT: process.env.OPENROUTER_MODEL_DEFAULT ?? 'openai/gpt-4o',
-  OPENROUTER_MODEL_ALT: process.env.OPENROUTER_MODEL_ALT ?? 'openai/gpt-4o-mini',
 } as const;

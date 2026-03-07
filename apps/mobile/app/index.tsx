@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
+  TextInput,
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
@@ -14,20 +15,17 @@ import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
 import { TextInputArea } from '../components/TextInputArea';
-import { ToneSelector } from '../components/ToneSelector';
-import { Tone } from '../constants/config';
 import { recognizeText } from '../modules/expo-ocr';
 import { useFreeCount } from '../contexts/FreeCountContext';
 
 export default function HomeScreen() {
   const [chatContext, setChatContext] = useState('');
-  const [tone, setTone] = useState<Tone>('calm');
-  const [customTone, setCustomTone] = useState('');
+  const [additionalContext, setAdditionalContext] = useState('');
   const [ocrLoading, setOcrLoading] = useState(false);
+  const [photoCount, setPhotoCount] = useState(0);
   const { remaining, canAnalyze } = useFreeCount();
 
-  const canSubmit =
-    chatContext.trim().length > 0 && (tone !== 'custom' || customTone.trim().length > 0);
+  const canSubmit = chatContext.trim().length > 0;
 
   const handleAnalyze = () => {
     if (!canSubmit) return;
@@ -39,8 +37,7 @@ export default function HomeScreen() {
       pathname: '/results',
       params: {
         chatContext,
-        tone,
-        ...(tone === 'custom' ? { customTone } : {}),
+        ...(additionalContext.trim().length > 0 ? { additionalContext } : {}),
       },
     });
   };
@@ -49,20 +46,28 @@ export default function HomeScreen() {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
       quality: 1,
+      allowsMultipleSelection: true,
     });
 
-    if (result.canceled || !result.assets[0]) return;
+    if (result.canceled || !result.assets || result.assets.length === 0) return;
 
     setOcrLoading(true);
     try {
-      const text = await recognizeText(result.assets[0].uri);
-      if (text.trim().length === 0) {
-        Alert.alert('No text found', 'Could not detect any text in that screenshot. Try a clearer image.');
+      const texts: string[] = [];
+      for (const asset of result.assets) {
+        const text = await recognizeText(asset.uri);
+        if (text.trim().length > 0) {
+          texts.push(text.trim());
+        }
+      }
+      if (texts.length === 0) {
+        Alert.alert('No text found', 'Could not detect any text in the selected images. Try clearer images.');
         return;
       }
-      setChatContext(text);
+      setChatContext(texts.join('\n\n'));
+      setPhotoCount(result.assets.length);
     } catch {
-      Alert.alert('OCR failed', 'Something went wrong reading the screenshot. Try pasting the text instead.');
+      Alert.alert('OCR failed', 'Something went wrong reading the screenshots. Try pasting the text instead.');
     } finally {
       setOcrLoading(false);
     }
@@ -76,7 +81,7 @@ export default function HomeScreen() {
       >
         <ScrollView style={styles.scroll} keyboardShouldPersistTaps="handled">
           <Text style={styles.title}>Analyze a conversation</Text>
-          <Text style={styles.subtitle}>Paste the chat or pick a screenshot</Text>
+          <Text style={styles.subtitle}>Paste messages, pick screenshots, or both</Text>
 
           <View style={styles.inputMethods}>
             <TouchableOpacity
@@ -87,17 +92,22 @@ export default function HomeScreen() {
               {ocrLoading ? (
                 <ActivityIndicator size="small" color="#4F46E5" />
               ) : (
-                <Text style={styles.screenshotButtonText}>Pick Screenshot</Text>
+                <Text style={styles.screenshotButtonText}>
+                  {photoCount > 0 ? `${photoCount} photo${photoCount > 1 ? 's' : ''} selected` : 'Pick Screenshots'}
+                </Text>
               )}
             </TouchableOpacity>
           </View>
 
           <TextInputArea value={chatContext} onChangeText={setChatContext} />
-          <ToneSelector
-            selected={tone}
-            customTone={customTone}
-            onSelect={setTone}
-            onCustomToneChange={setCustomTone}
+
+          <TextInput
+            style={styles.additionalContextInput}
+            placeholder="Add context... (e.g. 'This is my boss, we've had tension for months')"
+            placeholderTextColor="#9CA3AF"
+            value={additionalContext}
+            onChangeText={setAdditionalContext}
+            multiline
           />
 
           <TouchableOpacity
@@ -139,6 +149,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#EEF2FF',
   },
   screenshotButtonText: { fontSize: 14, fontWeight: '600', color: '#4F46E5' },
+  additionalContextInput: {
+    borderWidth: 1,
+    borderColor: '#D1D5DB',
+    borderRadius: 10,
+    padding: 12,
+    fontSize: 14,
+    color: '#111827',
+    minHeight: 60,
+    textAlignVertical: 'top',
+    marginTop: 12,
+    marginBottom: 4,
+  },
   button: { borderRadius: 12, paddingVertical: 16, alignItems: 'center', marginTop: 8, marginBottom: 32 },
   buttonActive: { backgroundColor: '#4F46E5' },
   buttonDisabled: { backgroundColor: '#D1D5DB' },

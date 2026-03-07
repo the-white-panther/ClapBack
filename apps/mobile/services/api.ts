@@ -1,9 +1,8 @@
-import { APP_CONFIG, Tone } from '../constants/config';
+import { APP_CONFIG } from '../constants/config';
 
 export interface AnalyzeRequest {
   chatContext: string;
-  tone: Tone;
-  customTone?: string;
+  additionalContext?: string;
 }
 
 export interface ReplyOption {
@@ -12,7 +11,8 @@ export interface ReplyOption {
 }
 
 export interface AnalyzeResponse {
-  psychology: string;
+  analysis: string;
+  recommendation: string;
   replies: ReplyOption[];
 }
 

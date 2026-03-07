@@ -1,15 +1,15 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-interface PsychologyCardProps {
-  insight: string;
+interface AnalysisCardProps {
+  analysis: string;
 }
 
-export function PsychologyCard({ insight }: PsychologyCardProps) {
+export function AnalysisCard({ analysis }: AnalysisCardProps) {
   return (
     <View style={styles.card}>
-      <Text style={styles.title}>Psychology Insight</Text>
-      <Text style={styles.text}>{insight}</Text>
+      <Text style={styles.title}>Analysis</Text>
+      <Text style={styles.text}>{analysis}</Text>
     </View>
   );
 }

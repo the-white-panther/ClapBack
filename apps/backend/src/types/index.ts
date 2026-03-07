@@ -1,12 +1,6 @@
-// Re-export shared types (duplicated locally until monorepo linking is set up)
-export type TonePreset = 'calm' | 'assertive' | 'cold' | 'funny' | 'romantic' | 'savage';
-
-export type Tone = TonePreset | 'custom';
-
 export interface AnalyzeRequest {
   chatContext: string;
-  tone: Tone;
-  customTone?: string;
+  additionalContext?: string;
 }
 
 export interface ReplyOption {
@@ -15,8 +9,9 @@ export interface ReplyOption {
 }
 
 export interface AnalyzeResponse {
-  psychology: string;
-  replies: [ReplyOption, ReplyOption, ReplyOption];
+  analysis: string;
+  recommendation: string;
+  replies: ReplyOption[];
 }
 
 export interface SubscriptionStatus {
