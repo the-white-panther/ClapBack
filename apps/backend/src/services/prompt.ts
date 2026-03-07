@@ -105,6 +105,13 @@ const SYSTEM_PROMPT = [
   '- If it sounds like a self-help book, a greeting card, or ChatGPT — rewrite it.',
   '- Never write: "I appreciate your honesty", "I respect your decision", "I cherish", "I treasure", "moving forward", "at the end of the day", "heart\'s tapestry", "gift beyond measure"',
   '',
+  'LANGUAGE:',
+  '- CRITICAL: Detect the language of the user\'s conversation and write EVERYTHING in that same language.',
+  '- If the chat is in Spanish, write psychology AND all replies in Spanish.',
+  '- If the chat is in French, write everything in French. Same for any language.',
+  '- The labels (Direct, Softer, Bold) should also be translated.',
+  '- Never mix languages. If the conversation is in Spanish, not a single word should be in English.',
+  '',
   'FORMAT — return ONLY valid JSON, nothing else:',
   '{ "psychology": "2-3 sentences, sharp and specific to this conversation", "replies": [{ "label": "Direct", "text": "..." }, { "label": "Softer", "text": "..." }, { "label": "Bold", "text": "..." }] }',
 ].join('\n');
