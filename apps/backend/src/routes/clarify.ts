@@ -11,7 +11,7 @@ clarifyRouter.post('/', validateAnalyzeRequest, async (c) => {
   const messages = buildClarifyPrompt(body.chatContext, body.additionalContext);
 
   try {
-    const rawResponse = await callOpenRouter(messages, ENV.OPENROUTER_MODEL_DEFAULT);
+    const rawResponse = await callOpenRouter(messages, ENV.OPENROUTER_MODEL_CHEAP);
     const cleaned = rawResponse.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
     const parsed = JSON.parse(cleaned);
     return c.json(parsed);
