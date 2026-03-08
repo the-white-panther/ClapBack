@@ -2,13 +2,14 @@
 
 ## Project Overview
 
-ClapBack is an iOS app that helps people craft replies in difficult conversations (ex-partners, couples, friends). Users provide chat context (text paste or screenshot), select a tone, and receive AI-powered analysis: a short psychology insight explaining what's happening, plus 3 suggested replies.
+ClapBack is an iOS app that helps people handle difficult conversations — work conflicts, family drama, friend issues, neighbor disputes, anything. Users paste chat text or upload screenshots (multi-photo OCR), add context about the situation, and get AI-powered analysis: what's happening, how to handle it strategically, and suggested reply messages. The AI always asks clarifying questions first before giving its analysis.
 
 ## Product Rules
 
-- Input: text paste OR screenshot (OCR via Apple Vision framework)
-- Tones: presets (Calm, Assertive, Cold, Funny, Romantic, Savage) + custom free-text
-- Output per analysis: 1 short psychology explanation + 3 reply alternatives
+- Input: text paste OR multi-screenshot (OCR via Apple Vision framework, on-device)
+- Two-phase flow: AI asks 3-5 clarifying questions first, then gives full analysis
+- Output per analysis: situation analysis + strategic recommendation + 3 reply alternatives
+- No tones — AI adapts naturally to the conversation context
 - No conversation history — every analysis is one-shot
 - No user accounts — anonymous usage, subscription via StoreKit
 - AI writes in whatever language the user's chat is in (auto-detected)
@@ -18,7 +19,7 @@ ClapBack is an iOS app that helps people craft replies in difficult conversation
 ## Tech Stack
 
 ### Mobile (Frontend)
-- **React Native** with **Expo** (SDK 52+)
+- **React Native** with **Expo** (SDK 55)
 - **TypeScript** — strict mode, no `any`
 - **Expo Router** — file-based navigation
 - **expo-image-picker** — for screenshot selection
@@ -29,18 +30,20 @@ ClapBack is an iOS app that helps people craft replies in difficult conversation
 ### Backend
 - **Node.js** with **Hono** (lightweight, fast, edge-ready)
 - **TypeScript** — shared types with frontend where possible
-- Deployed on **Railway** or **Fly.io** (simple, cheap, auto-scaling)
+- Deployed on **Railway** (CLI deploy via `railway up`)
+- Production URL: `https://jubilant-celebration-production.up.railway.app`
 - Responsibilities:
+  - Two-phase AI flow: /api/clarify + /api/analyze
   - Proxy AI requests (protect API key)
-  - Validate RevenueCat subscription receipts
+  - Validate RevenueCat subscription receipts (planned)
   - Rate limiting
 
 ### AI
 - **OpenRouter** as the AI gateway
-- Multi-model routing per tone:
-  - **GPT-4o** (OPENROUTER_MODEL_DEFAULT) → cold, funny, romantic, savage
-  - **Llama 3.1 70B** (OPENROUTER_MODEL_ALT) → calm, assertive, custom
-- Few-shot examples as actual message turns (user/assistant pairs) for tone accuracy
+- Two-model strategy:
+  - **Gemini 2.5 Flash** (OPENROUTER_MODEL_CHEAP) → clarifying questions (fast, cheap)
+  - **Gemini 3.1 Pro Preview** (OPENROUTER_MODEL_DEFAULT) → full analysis (#1 intelligence score)
+- Cost per analysis: ~$0.015
 
 ### OCR
 - **Apple Vision framework** via `expo-modules` or a React Native bridge
@@ -82,21 +85,35 @@ ClapBack/
 
 ## API Design
 
+### POST /api/clarify
+Request:
+```json
+{
+  "chatContext": "string (the conversation text)",
+  "additionalContext": "string (optional user context)"
+}
+```
+Response:
+```json
+{
+  "questions": ["question 1", "question 2", "..."]
+}
+```
+
 ### POST /api/analyze
 Request:
 ```json
 {
   "chatContext": "string (the conversation text)",
-  "tone": "calm | assertive | cold | funny | romantic | savage | custom",
-  "customTone": "string (only if tone=custom)",
-  "locale": "auto"
+  "additionalContext": "string (optional user context)",
+  "clarifyingAnswers": "string (formatted Q&A pairs)"
 }
 ```
-
 Response:
 ```json
 {
-  "psychology": "Short explanation of what's happening in this conversation",
+  "analysis": "What's happening in this conversation",
+  "recommendation": "Strategic advice on how to handle it",
   "replies": [
     { "label": "Direct", "text": "..." },
     { "label": "Softer", "text": "..." },
@@ -105,9 +122,9 @@ Response:
 }
 ```
 
-### POST /api/validate-subscription
+### POST /api/validate-subscription (stub)
 Request: RevenueCat user ID
-Response: subscription status + remaining free analyses
+Response: subscription status
 
 ## Environment Variables
 

@@ -15,16 +15,6 @@
 - NativeWind v4 doesn't work in Expo Go (requires development build + CocoaPods)
 - NativeWind v2 has peer dependency conflicts with React 19 / Expo SDK 55
 - Switched to React Native StyleSheet.create() — zero dependencies, works everywhere
-- For a small app (3 screens), StyleSheet is simpler and has no setup overhead
-
-### 2026-03-07 - Multi-Model AI Routing
-- Claude Sonnet via OpenRouter was too cautious for edgy tones (savage, cold)
-- GPT-4o handles cold/funny/romantic/savage well but defaults to AI cliches for calm/assertive
-- Llama 3.1 70B follows style instructions more literally — better for calm/assertive
-- Final routing: GPT-4o for cold/funny/romantic/savage, Llama 3.1 70B for calm/assertive/custom
-- Few-shot examples as actual message turns (user/assistant pairs) are FAR more effective than text examples in system prompts
-- Anti-cliche blocklists in prompts don't work with GPT-4o — it ignores negative instructions
-- The "sounds like" / "does NOT sound like" pattern in tone modifiers helps but isn't enough alone
 
 ### 2026-03-07 - Backend .env Loading
 - Hono/tsx doesn't auto-load .env files — must use `tsx watch --env-file=.env` flag
@@ -35,15 +25,62 @@
 - Required a custom Expo module (`modules/expo-ocr/`) using expo-modules-core
 - Swift bridges to JS via AsyncFunction + Promise pattern
 - This means Expo Go is no longer usable — must use dev builds (`npx expo run:ios`)
-- expo-image-picker already installed; just needed the plugin config in app.json for permissions
+- Module needs: package.json + podspec + expo-module.config.json for autolinking
+- Must be added as `"expo-ocr": "file:./modules/expo-ocr"` in package.json dependencies
+- Do NOT add to app.json plugins — autolinking handles it via node_modules
 
 ### 2026-03-07 - CocoaPods + Spaces in Paths
 - CocoaPods/React Native prebuild fails if the project path contains spaces
 - Renamed parent folder from "Vibe Coding" to "VibeCoding" to fix
 - System Ruby 2.6 is too old for the `ffi` gem required by CocoaPods — install via Homebrew instead
-- Homebrew on Apple Silicon installs to `/opt/homebrew/bin/` — needs explicit PATH setup
 
-### 2026-03-07 - Expo Go Emoji Rendering
-- Emojis in Text components render as ? boxes in Expo Go on iOS Simulator
-- Unicode escapes (\u{1F60C}) and literal emoji characters both fail
-- Removed emojis from tone selector; will revisit with development builds later
+### 2026-03-07 - Product Pivot: General Difficult Conversations
+- Originally positioned as "reply to your ex" — too narrow
+- Pivoted to "handle any difficult conversation" (work, family, friends, neighbors, etc.)
+- Removed tone selector (calm/assertive/cold/funny/romantic/savage)
+- New output format: analysis + recommendation + replies (was: psychology + replies)
+- Much broader market appeal
+
+### 2026-03-07 - Two-Phase Clarify Flow
+- Single-shot analysis with limited context produced inaccurate, guessing responses
+- Added mandatory clarifying questions step: AI asks 3-5 questions before analyzing
+- Two API calls per analysis: /api/clarify (cheap model) -> /api/analyze (smart model)
+- Dramatically improved analysis quality — AI no longer guesses
+- UX: questions shown inline (not modal), user answers text inputs, then submits
+
+### 2026-03-07 - AI Language Detection
+- AI was responding in English even when conversation was in Spanish
+- Added explicit CRITICAL language rule to system prompt
+- Must detect conversation language and write EVERYTHING in that language
+- Including reply labels (Direct -> Directo, etc.)
+
+### 2026-03-08 - AI Model Selection
+- GPT-4o: decent but not the best for nuanced emotional analysis
+- Claude Sonnet 4: great empathy but expensive ($3/$15 per 1M tokens)
+- Gemini 3.1 Pro Preview: #1 intelligence score (57.2) at $2/$12 — best value
+- Gemini 2.5 Flash: cheap ($0.30/$2.50) and fast — perfect for clarifying questions
+- Final setup: Flash for clarify, Gemini 3.1 Pro for analyze — ~$0.015 per analysis
+- At this cost, break-even is 87+ analyses/week per monthly subscriber (impossible in normal use)
+
+### 2026-03-08 - Railway Deployment
+- Railway GitHub integration had issues detecting the repo — used CLI instead
+- `railway init` + `railway up` from apps/backend/ directory works reliably
+- Must `railway service <name>` to link before setting variables
+- `railway variables set KEY=VALUE` for env vars
+- `railway domain` to generate public URL
+- Multi-stage Dockerfile (node:20-alpine) keeps image small
+
+## Cost Analysis
+
+### Per Analysis Cost
+- Clarify (Gemini 2.5 Flash): ~$0.0006
+- Analyze (Gemini 3.1 Pro): ~$0.014
+- Total: ~$0.015 per analysis
+
+### Revenue per Subscriber (post-Apple 30%)
+- Weekly $1.99 -> $1.39/week
+- Monthly $6.99 -> $4.89/month
+- Yearly $39.99 -> $27.99/year
+
+### Margin
+- Monthly subscriber doing 30 analyses/month: $4.89 revenue - $0.45 AI cost = $4.44 profit (91% margin)
