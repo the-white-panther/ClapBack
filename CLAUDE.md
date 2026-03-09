@@ -46,9 +46,10 @@ ClapBack is an iOS app that helps people handle difficult conversations — work
 - Cost per analysis: ~$0.015
 
 ### OCR
-- **Apple Vision framework** via `expo-modules` or a React Native bridge
+- **Apple Vision framework** via custom Expo module (`modules/expo-ocr/`)
+- Swift native bridge using expo-modules-core (AsyncFunction + Promise)
 - Runs on-device — no server round-trip for OCR
-- Fallback: Google Cloud Vision API if on-device quality is insufficient
+- Requires dev builds (`npx expo run:ios`) — no Expo Go
 
 ## Architecture Decisions
 
@@ -59,26 +60,28 @@ ClapBack is an iOS app that helps people handle difficult conversations — work
 5. **No auth system** — RevenueCat anonymous user IDs handle subscription identity
 6. **No database** — app is stateless; RevenueCat handles subscription state, free count is local
 
-## Directory Structure (planned)
+## Directory Structure
 
 ```
 ClapBack/
   apps/
     mobile/              # Expo React Native app
-      app/               # Expo Router pages
-      components/        # UI components
-      services/          # API calls, OCR, RevenueCat
-      hooks/             # Custom hooks
-      types/             # Shared TypeScript types
-      constants/         # Config, tone presets, pricing
+      app/               # Expo Router pages (index, results, paywall)
+      components/        # UI components (AnalysisCard, RecommendationCard, ReplyCard, TextInputArea)
+      contexts/          # React Contexts (FreeCountContext)
+      hooks/             # Custom hooks (useAnalysis)
+      services/          # API calls, OCR, RevenueCat stubs
+      types/             # TypeScript types (navigation)
+      constants/         # Config (API URL, free analysis limit)
+      modules/expo-ocr/  # Custom Expo module — Apple Vision OCR (Swift native)
       assets/            # Images, fonts
     backend/             # Hono API server
       src/
-        routes/          # API endpoints
-        services/        # OpenRouter, RevenueCat validation
-        middleware/       # Rate limiting, auth
-        types/           # Shared types
-        config/          # Environment config
+        routes/          # API endpoints (clarify, analyze, subscription)
+        services/        # OpenRouter, prompt builders, RevenueCat stub
+        middleware/       # Rate limiting, request validation
+        types/           # Request/response types
+        config/          # Environment variables and model config
   packages/
     shared/              # Types shared between mobile & backend
 ```

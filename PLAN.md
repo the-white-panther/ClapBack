@@ -6,6 +6,23 @@ Sprint 1 delivered the core AI analysis pipeline (home -> analyze -> results wit
 
 ---
 
+## Sprint 1: Project Skeleton ✅ COMPLETADO
+
+**Goal:** Monorepo funcional con flujo básico end-to-end.
+
+### Lo que se hizo
+
+1. **Monorepo** — apps/mobile + apps/backend + packages/shared
+2. **Home screen** — text input + screenshot selection (single photo)
+3. **Results screen** — mostraba psychology card + reply cards
+4. **Paywall screen** — UI estática
+5. **Backend** — Hono server, /api/analyze, OpenRouter (GPT-4o)
+6. **Tone selector** — 6 presets (eliminado en Sprint 2)
+7. **NativeWind dropped** — cambiado a StyleSheet.create()
+8. **Custom OCR module** — expo-ocr con Apple Vision (estructura base)
+
+---
+
 ## Sprint 2: Core Loop + Backend Deploy ✅ COMPLETADO
 
 **Goal:** Free count enforced, UX completo, backend deployed. App funcional en dispositivo real.

@@ -60,9 +60,12 @@ User Input (text/screenshots + optional context)
 | `components/ReplyCard.tsx` | Displays suggested reply with copy button |
 | `components/TextInputArea.tsx` | Multi-line text input for chat context |
 | `services/api.ts` | HTTP calls: clarifyChat() + analyzeChat() |
+| `services/ocr.ts` | OCR service helper (stub) |
+| `services/purchases.ts` | RevenueCat service (stub, not yet wired) |
 | `modules/expo-ocr/` | Custom Expo module — Apple Vision OCR (Swift native) |
 | `hooks/useAnalysis.ts` | Two-phase state machine (clarify -> answer -> analyze) |
 | `contexts/FreeCountContext.tsx` | Free analysis count shared across screens |
+| `types/navigation.ts` | Navigation-related TypeScript types |
 | `constants/config.ts` | API URL, free analysis limit |
 
 ### Backend (`apps/backend/`)
@@ -74,6 +77,7 @@ User Input (text/screenshots + optional context)
 | `routes/subscription.ts` | POST /api/validate-subscription (stub) |
 | `services/openrouter.ts` | OpenRouter API integration |
 | `services/prompt.ts` | Two prompt builders: buildClarifyPrompt + buildAnalyzePrompt |
+| `services/revenuecat.ts` | RevenueCat validation (stub, not yet wired) |
 | `middleware/rateLimit.ts` | Per-device rate limiting |
 | `middleware/validateRequest.ts` | Input validation |
 | `config/index.ts` | Environment variables and model config |
